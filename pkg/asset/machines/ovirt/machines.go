@@ -72,6 +72,8 @@ func provider(platform *ovirt.Platform, pool *types.MachinePool, userDataSecret 
 		InstanceTypeId:    pool.Platform.Ovirt.InstanceTypeID,
 		MemoryMB:          pool.Platform.Ovirt.MemoryMB,
 		VMType:            string(pool.Platform.Ovirt.VMType),
+		AutoPinningPolicy: pool.Platform.Ovirt.AutoPinningPolicy,
+		Hugepages:         pool.Platform.Ovirt.Hugepages,
 	}
 	if pool.Platform.Ovirt.CPU != nil {
 		spec.CPU = &ovirtprovider.CPU{

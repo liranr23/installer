@@ -56,3 +56,12 @@ variable "ovirt_master_instance_type_id" {
   type        = string
   description = "master VM instance type ID"
 }
+variable "ovirt_master_auto_pinning_policy" {
+  type        = string
+  description = "master VM auto pinning policy"
+}
+
+variable "ovirt_master_hugepages" {
+  type        = string
+  description = "master VM hugepages size in KiB"
+}

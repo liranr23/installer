@@ -24,6 +24,17 @@ type MachinePool struct {
 	// +kubebuilder:validation:Enum="";desktop;server;high_performance
 	// +optional
 	VMType VMType `json:"vmType,omitempty"`
+
+	// AutoPinningPolicy defines the policy to automatically set the CPU
+	// and NUMA including pinning to the host for the instance.
+	// +kubebuilder:validation:Enum="";disabled;existing;adjust
+	// +optional
+	AutoPinningPolicy string `json:"autoPinningPolicy,omitempty"`
+
+	// Hugepages is the size of a VM's hugepages to use in KiBs.
+	// +kubebuilder:validation:Enum=0;2048;1048576
+	// +optional
+	Hugepages int32 `json:"hugepages,omitempty"`
 }
 
 // Disk defines a VM disk
@@ -89,5 +100,13 @@ func (p *MachinePool) Set(required *MachinePool) {
 
 	if required.OSDisk != nil {
 		p.OSDisk = required.OSDisk
+	}
+
+	if required.AutoPinningPolicy != "" {
+		p.AutoPinningPolicy = required.AutoPinningPolicy
+	}
+
+	if required.Hugepages > 0 {
+		p.Hugepages = required.Hugepages
 	}
 }

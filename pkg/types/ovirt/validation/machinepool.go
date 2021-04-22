@@ -48,6 +48,16 @@ func ValidateMachinePool(p *ovirt.MachinePool, fldPath *field.Path) field.ErrorL
 		}
 	}
 
+	if p.AutoPinningPolicy != "" && !ValidAutoPinningPolicy(p.AutoPinningPolicy) {
+		allErrs = append(allErrs, field.Invalid(fldPath.Child("autoPinningPolicy"), p.AutoPinningPolicy, fmt.Sprintf("AutoPinningPolicy must be one of %s", supportedAutoPinningPolicies())))
+	}
+
+	if p.Hugepages > 0 {
+		if p.Hugepages != 2048 && p.Hugepages != 1048576 {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("hugepages"), p.Hugepages, "Hugepages must be one of 2048, 1048576"))
+		}
+	}
+
 	return allErrs
 }
 
@@ -67,5 +77,24 @@ func supportedVMTypes() []ovirt.VMType {
 		ovirt.VMTypeDesktop,
 		ovirt.VMTypeServer,
 		ovirt.VMTypeHighPerformance,
+	}
+}
+
+// ValidAutoPinningPolicy returns true if the AutoPinningPolicy is supported.
+func ValidAutoPinningPolicy(autoPinningPolicy string) bool {
+	for _, v := range supportedAutoPinningPolicies() {
+		if autoPinningPolicy == v {
+			return true
+		}
+	}
+	return false
+}
+
+// supportedAutoPinningPolicies returns a slice of all supported AutoPinningPolicy.
+func supportedAutoPinningPolicies() []string {
+	return []string{
+		"disabled",
+		"existing",
+		"adjust",
 	}
 }
